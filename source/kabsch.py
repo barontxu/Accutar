@@ -11,6 +11,7 @@ import re
 def kabsched_Q(Q, P):
     """
     Rotate matrix Q unto P and return Q
+    Q and P are numpy array with shape of (N * 3)
     """
     Pc = centroid(P)
     Qc = centroid(Q)
@@ -95,13 +96,3 @@ def rmsd(V, W):
     for v, w in zip(V, W):
         rmsd += sum([(v[i]-w[i])**2.0 for i in range(D)])
     return np.sqrt(rmsd/N)
-
-
-
-
-
-
-
-
-
-
