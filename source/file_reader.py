@@ -19,4 +19,4 @@ def get_matrix_in_file(filename):
 		NpArray.append(np_point)
 
 	return np.array(NpArray)
-	
+

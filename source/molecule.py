@@ -11,7 +11,7 @@ import numpy as np
 
 class Molecule(object):
 	"""docstring for Molecule"""
-	points_matrix = np.asarray([0])
+	points_matrix = np.array([0])
 
 	def __init__(self, xyz_matrix):
 		self.points_matrix = xyz_matrix
@@ -30,5 +30,4 @@ class MoleculeQ(Molecule):
 	def set_matrix(self, xyz_matrix):
 		self.points_matrix = xyz_matrix
 
-	
-		
+
