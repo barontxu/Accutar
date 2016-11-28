@@ -7,7 +7,7 @@ from kabsch import kabsched_Q, rmsd, kabsch_rmsd
 from init_Q import q_config
 
 
-def optimize_structure_by_pos(P_origin, Q_origin, k_pos):
+def optimize_structure_by_pos(Q_origin, P_origin, k_pos):
 	assert k_pos > 1
 	assert k_pos < P_origin.shape[0] - 1
 	
@@ -48,9 +48,9 @@ def optimize_structure_by_pos(P_origin, Q_origin, k_pos):
 	cos_theta = beta / np.sqrt(alpha**2 + beta**2)
 	sin_theta = alpha / np.sqrt(alpha**2 + beta**2)
 
-	pre_A = [[1, 0, 		 0],
-			 [0, cos_theta,  sin_theta],
-			 [0, -sin_theta, cos_theta]]
+	pre_A = np.array([[1, 0, 		 0],
+			 		  [0, cos_theta,  sin_theta],
+			 		  [0, -sin_theta, cos_theta]])
 
 	A = np.dot(np.dot(U.transpose(), pre_A), U)
 
@@ -64,7 +64,7 @@ def optimize_structure_by_pos(P_origin, Q_origin, k_pos):
 
 
 def optimize(Q_origin, P_origin):
-	rounds = 3
+	rounds = 10000
 	P = np.copy(P_origin)
 	Q = np.copy(Q_origin)
 	print rmsd(Q, P)
