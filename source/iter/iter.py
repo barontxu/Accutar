@@ -9,7 +9,7 @@ import numpy as np
 import sys
 sys.path.append("..")
 import config
-from kabsch import kabsched_Q, rmsd
+from kabsch import kabsched_Q, rmsd, kabsch_rmsd
 
 
 def wrap_config():
@@ -45,9 +45,16 @@ def construct_Q_from(P):
 			Q = expand_Q_from(Q[0:-1], tmp_p)
 
 	print rmsd(Q, P)
-	from IPython import embed; embed()
-
+	print "lower bound: ", lower_bound(Q,P)
 	return Q
+
+
+def lower_bound(Q, P):
+	sum = 0
+	for i in range(P.shape[0] / 3):
+		sum += 3* (kabsch_rmsd(Q[0:3], P[3*i:3*i+3])) ** 2
+	return np.sqrt(sum/P.shape[0])
+
 
 def expand_Q_from(Q, P):
 	'''

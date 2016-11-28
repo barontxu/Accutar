@@ -8,13 +8,18 @@ https://en.wikipedia.org/wiki/Kabsch_algorithm
 import numpy as np
 import re
 
-def kabsched_Q(Q, P):
+def kabsched_Q(Q_origin, P_origin):
     """
     Rotate matrix Q unto P and return Q
     Q and P are numpy array with shape of (N * 3)
     """
+
+    P = np.copy(P_origin)
+    Q = np.copy(Q_origin)
+
     Pc = centroid(P)
     Qc = centroid(Q)
+
     P -= Pc
     Q -= Qc
 
@@ -25,6 +30,38 @@ def kabsched_Q(Q, P):
 
     Q += Pc
 
+    return Q
+
+
+def kabsch_rmsd(Q_origin, P_origin):
+    """
+    Rotate matrix Q unto P and calculate the RMSD
+    """
+    P = np.copy(P_origin)
+    Q = np.copy(Q_origin)
+
+    Pc = centroid(P)
+    Qc = centroid(Q)
+
+    P -= Pc
+    Q -= Qc
+
+    U = kabsch(Q, P)
+
+    # Rotate Q
+    Q = np.dot(Q, U)
+
+    return rmsd(Q, P)
+
+
+def rotate(Q, P):
+    """
+    Rotate matrix Q unto matrix P using Kabsch algorithm
+    """
+    U = kabsch(Q, P)
+
+    # Rotate P
+    Q = np.dot(Q, U)
     return Q
 
 
