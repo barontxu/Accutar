@@ -59,7 +59,6 @@ def optimize_structure_by_pos(Q_origin, P_origin, k_pos):
 	Q[k+1: nr_P_row] = Qk
 
 	Q = kabsched_Q(Q, P)
-	# from IPython import embed; embed()
 	return Q
 
 
@@ -67,8 +66,7 @@ def optimize(Q_origin, P_origin):
 	rounds = 1
 	P = np.copy(P_origin)
 	Q = np.copy(Q_origin)
-	print rmsd(Q, P)
-	print "--------------------------------------"
+
 	for _ in range(rounds):
 		for k in range(2, P.shape[0]-1):
 			Q = optimize_structure_by_pos(Q, P, k)
@@ -76,6 +74,35 @@ def optimize(Q_origin, P_origin):
 
 	print rmsd(Q, P)
 	return Q
+
+
+def optimize_accelerate(Q_origin, P_origin):
+	rounds = 1
+	P = np.copy(P_origin)
+	Q = np.copy(Q_origin)
+
+	PU = np.flipud(P)
+	QU = np.flipud(Q)
+
+	for _ in range(rounds):
+		for k in range(2, (P.shape[0]-1)/2):
+			QU = optimize_structure_by_pos(QU, PU, P.shape[0]-1-k)
+			print rmsd(QU, PU)
+
+		Q = np.flipud(QU)
+
+		for k in range((P.shape[0]-1)/2, P.shape[0]-1):
+			Q = optimize_structure_by_pos(Q, P, k)
+			print rmsd(Q, P)
+
+	print rmsd(Q, P)
+	return Q
+
+
+
+
+
+
 
 
 
