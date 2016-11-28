@@ -64,7 +64,7 @@ def optimize_structure_by_pos(Q_origin, P_origin, k_pos):
 
 
 def optimize(Q_origin, P_origin):
-	rounds = 10000
+	rounds = 1
 	P = np.copy(P_origin)
 	Q = np.copy(Q_origin)
 	print rmsd(Q, P)
@@ -75,7 +75,6 @@ def optimize(Q_origin, P_origin):
 			print rmsd(Q, P)
 
 	print rmsd(Q, P)
-	from IPython import embed; embed()
 	return Q
 
 

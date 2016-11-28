@@ -17,6 +17,8 @@ def wrap_config():
 	return wrapped_config
 
 q_config = wrap_config()
+lengths_config = config.config[0:3]
+rads_config    = config.config[3:6]
 
 
 def construct_Q_from(P):
@@ -58,8 +60,8 @@ def expand_Q_from(Q, P):
 	Q 		 : k+1 * 3
 	'''
 	nr_points = Q.shape[0]
-	lengths = q_config[(nr_points-1)%3]["side_lengths"]
-	rad 	= q_config[(nr_points-1)%3]["rad"]
+	lengths = q_config[(nr_points-2)%3]["side_lengths"]
+	rad 	= q_config[(nr_points-2)%3]["rad"]
 
 	center_para = lengths[1] * np.cos(rad) / lengths[0]
 

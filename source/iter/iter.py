@@ -29,6 +29,6 @@ if __name__ == "__main__":
 	QMatrix = construct_Q_from(PMatrix)
 
 	QMatrix = optimize(QMatrix, PMatrix)
-
+	from IPython import embed; embed()
 
 
