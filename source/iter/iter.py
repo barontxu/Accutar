@@ -11,7 +11,7 @@ sys.path.append("..")
 import config
 from kabsch import kabsched_Q, rmsd, kabsch_rmsd
 from init_Q import construct_Q_from
-
+from optimize import optimize
 
 
 if __name__ == "__main__":
@@ -27,6 +27,8 @@ if __name__ == "__main__":
 	PMatrix = fr.get_matrix_in_file(p_filename)
 
 	QMatrix = construct_Q_from(PMatrix)
+
+	QMatrix = optimize(QMatrix, PMatrix)
 
 
 

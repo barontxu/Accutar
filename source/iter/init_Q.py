@@ -39,6 +39,7 @@ def construct_Q_from(P):
 
 	print rmsd(Q, P)
 	print "lower bound: ", lower_bound(Q,P)
+
 	return Q
 
 
