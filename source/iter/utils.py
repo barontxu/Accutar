@@ -28,8 +28,27 @@ def structure_test(QMatrix):
 
 def save_structure(filename, Matrix, rmsd_value):
 	f = open(filename, 'w')
-	f.write(str(rmsd_value)+'\n')
-	f.write(str(Matrix.shape[0]+'\n'))
+	f.write('rmsd: '+str(rmsd_value)+'\n')
+	f.write(str(Matrix.shape[0])+'\n')
+	for i in range(Matrix.shape[0]):
+		for each in Matrix[i]:
+			f.write(str(each) + ' ')
+		f.write('\n')
+	f.close()
 
 
-# def load_structure(filename):
+def load_structure(filename):
+	f = open(filename, 'r').read()
+	fl = f.splitlines()
+
+	points_count = int(fl[1])
+
+	NpArray = []
+
+	for i in range(2, points_count+2):
+		np_point = np.array(map(lambda x: float(x), fl[i].split()))
+		NpArray.append(np_point)
+
+	return np.array(NpArray)
+
+
