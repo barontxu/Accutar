@@ -56,19 +56,15 @@ if __name__ == "__main__":
 		QMatrix = optimize(QMatrix, PMatrix, rounds)
 		end = time.time()
 		print "run time: ", end - start
-		if structure_test(QMatrix):
-			print 'valid structure'
-			save_structure(save_filename, QMatrix, rmsd(QMatrix, PMatrix))
-		else:
-			print 'invalid structure !!!!!!'
 	else:
 		QMatrix = load_structure(model_file)
 		QMatrix = optimize(QMatrix, PMatrix, rounds)
-		if structure_test(QMatrix):
-			print 'valid structure'
-			save_structure(save_filename, QMatrix, rmsd(QMatrix, PMatrix))
-		else:
-			print 'invalid structure !!!!!!'
+
+	if structure_test(QMatrix):
+		print 'valid structure'
+		save_structure(save_filename, QMatrix, rmsd(QMatrix, PMatrix))
+	else:
+		print 'invalid structure !!!!!!'
 
 
 	from IPython import embed; embed()
