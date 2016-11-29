@@ -24,3 +24,12 @@ def structure_test(QMatrix):
 		if np.abs(theta - rads_config[i%3]) > 1e-4:
 			return False
 	return True
+
+
+def save_structure(filename, Matrix, rmsd_value):
+	f = open(filename, 'w')
+	f.write(str(rmsd_value)+'\n')
+	f.write(str(Matrix.shape[0]+'\n'))
+
+
+# def load_structure(filename):

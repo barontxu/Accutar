@@ -11,7 +11,8 @@ sys.path.append("..")
 import config
 from kabsch import kabsched_Q, rmsd, kabsch_rmsd
 from init_Q import construct_Q_from
-from optimize import optimize
+from optimize import optimize, optimize_accelerate
+from utils import structure_test
 
 
 if __name__ == "__main__":
@@ -20,15 +21,34 @@ if __name__ == "__main__":
 
 	parser = argparse.ArgumentParser(description="")
 	parser.add_argument('-p', action='store', dest='p_filename', type=str, help='')
+	parser.add_argument('-c', action='store', dest='need_continue', default=False, type=str, help='')
+	parser.add_argument('-e', action='store', dest='model_file', default='', type=str, help='')
+	parser.add_argument('-r', action='store', dest='rounds', default=100, type=int, help='')
 	args = parser.parse_args()
 
-	p_filename = args.p_filename
+	p_filename 	  = args.p_filename
+	need_continue = args.need_continue
+	model_file 	  = args.model_file
+	rounds		  = args.rounds
 
-	PMatrix = fr.get_matrix_in_file(p_filename)
+	if not need_continue:
+		PMatrix = fr.get_matrix_in_file(p_filename)
 
-	QMatrix = construct_Q_from(PMatrix)
+		QMatrix = construct_Q_from(PMatrix)
+		import time
 
-	QMatrix = optimize(QMatrix, PMatrix)
+		start = time.time()
+		QMatrix = optimize(QMatrix, PMatrix, rounds)
+		end = time.time()
+		print "run time: ", end - start
+		if structure_test(QMatrix):
+			print 'valid structure'
+		else:
+			print 'invalid structure !!!!!!'
+	# else:
+		
+
+
 	from IPython import embed; embed()
 
 

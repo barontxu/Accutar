@@ -48,8 +48,8 @@ def optimize_structure_by_pos(Q_origin, P_origin, k_pos):
 	cos_theta = beta / np.sqrt(alpha**2 + beta**2)
 	sin_theta = alpha / np.sqrt(alpha**2 + beta**2)
 
-	pre_A = np.array([[1, 0, 		 0],
-			 		  [0, cos_theta,  sin_theta],
+	pre_A = np.array([[1,  0, 		  0		   ],
+			 		  [0,  cos_theta, sin_theta],
 			 		  [0, -sin_theta, cos_theta]])
 
 	A = np.dot(np.dot(U.transpose(), pre_A), U)
@@ -62,15 +62,14 @@ def optimize_structure_by_pos(Q_origin, P_origin, k_pos):
 	return Q
 
 
-def optimize(Q_origin, P_origin):
-	rounds = 1
+def optimize(Q_origin, P_origin, rounds=1750):
 	P = np.copy(P_origin)
 	Q = np.copy(Q_origin)
 
 	for _ in range(rounds):
 		for k in range(2, P.shape[0]-1):
 			Q = optimize_structure_by_pos(Q, P, k)
-			print rmsd(Q, P)
+		print rmsd(Q, P)
 
 	print rmsd(Q, P)
 	return Q
@@ -78,22 +77,23 @@ def optimize(Q_origin, P_origin):
 
 def optimize_accelerate(Q_origin, P_origin):
 	rounds = 1
+
 	P = np.copy(P_origin)
 	Q = np.copy(Q_origin)
 
 	PU = np.flipud(P)
 	QU = np.flipud(Q)
 
+	
 	for _ in range(rounds):
 		for k in range(2, (P.shape[0]-1)/2):
 			QU = optimize_structure_by_pos(QU, PU, P.shape[0]-1-k)
-			print rmsd(QU, PU)
 
 		Q = np.flipud(QU)
 
 		for k in range((P.shape[0]-1)/2, P.shape[0]-1):
 			Q = optimize_structure_by_pos(Q, P, k)
-			print rmsd(Q, P)
+	
 
 	print rmsd(Q, P)
 	return Q
