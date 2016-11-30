@@ -9,7 +9,18 @@ sys.path.append("..")
 import config
 from kabsch import kabsched_Q, rmsd, kabsch_rmsd
 
-from init_Q import q_config
+
+def optimize(Q_origin, P_origin, rounds=100):
+	P = np.copy(P_origin)
+	Q = np.copy(Q_origin)
+
+	for j in range(rounds):
+		for k in range(2, P.shape[0]-1):
+			Q = optimize_structure_by_pos(Q, P, k)
+		print "rounds: ", j, " rmsd: ",rmsd(Q, P)
+
+	print rmsd(Q, P)
+	return Q
 
 
 def optimize_structure_by_pos(Q_origin, P_origin, k_pos):
@@ -65,19 +76,6 @@ def optimize_structure_by_pos(Q_origin, P_origin, k_pos):
 	Q[k+1: nr_P_row] = Qk
 
 	Q = kabsched_Q(Q, P)
-	return Q
-
-
-def optimize(Q_origin, P_origin, rounds=100):
-	P = np.copy(P_origin)
-	Q = np.copy(Q_origin)
-
-	for j in range(rounds):
-		for k in range(2, P.shape[0]-1):
-			Q = optimize_structure_by_pos(Q, P, k)
-		print "rounds: ", j, " rmsd: ",rmsd(Q, P)
-
-	print rmsd(Q, P)
 	return Q
 
 

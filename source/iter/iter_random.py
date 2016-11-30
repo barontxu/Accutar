@@ -54,11 +54,11 @@ if __name__ == "__main__":
 	for _ in range(1):
 		QMatrix = randomly_construct_Q_from(PMatrix)
 		QMatrix = optimize(QMatrix, PMatrix, rounds)
-		rmsd_value = rmsd(QMatrix, PMatrix)
-		if rmsd_value < rmsd_min:
-			rmsd_min = rmsd_value
-			Q_min = QMatrix
-			print "min: ", rmsd_min
+		# rmsd_value = rmsd(QMatrix, PMatrix)
+		# if rmsd_value < rmsd_min:
+		# 	rmsd_min = rmsd_value
+		# 	Q_min = QMatrix
+		# 	print "min: ", rmsd_min
 	# else:
 		# QMatrix = load_structure(model_file)
 		# QMatrix = optimize(QMatrix, PMatrix, rounds)
