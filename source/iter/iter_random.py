@@ -10,7 +10,7 @@ import sys
 sys.path.append("..")
 import config
 from kabsch import kabsched_Q, rmsd, kabsch_rmsd
-from init_Q import construct_Q_from
+from init_Q import construct_Q_from, randomly_construct_Q_from
 from optimize import optimize, optimize_accelerate
 from utils import structure_test, save_structure, load_structure
 
@@ -47,17 +47,21 @@ if __name__ == "__main__":
 
 	PMatrix = fr.get_matrix_in_file(p_filename)
 
-	if not need_continue:
+	Q_min = 0
+	rmsd_min = 1000
 
-		QMatrix = construct_Q_from(PMatrix)
-
-		start = time.time()
+	# if not need_continue:
+	for _ in range(1):
+		QMatrix = randomly_construct_Q_from(PMatrix)
 		QMatrix = optimize(QMatrix, PMatrix, rounds)
-		end = time.time()
-		print "run time: ", end - start
-	else:
-		QMatrix = load_structure(model_file)
-		QMatrix = optimize(QMatrix, PMatrix, rounds)
+		rmsd_value = rmsd(QMatrix, PMatrix)
+		if rmsd_value < rmsd_min:
+			rmsd_min = rmsd_value
+			Q_min = QMatrix
+			print "min: ", rmsd_min
+	# else:
+		# QMatrix = load_structure(model_file)
+		# QMatrix = optimize(QMatrix, PMatrix, rounds)
 
 	if structure_test(QMatrix):
 		print 'valid structure'

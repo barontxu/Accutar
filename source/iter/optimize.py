@@ -1,4 +1,9 @@
+'''
+include optimize function
+'''
+
 import numpy as np
+import time
 import sys
 sys.path.append("..")
 import config
@@ -25,11 +30,12 @@ def optimize_structure_by_pos(Q_origin, P_origin, k_pos):
 	if np.abs(u1[1]) < np.abs(u1[0]):
 		u2 = np.array([0, 1, 0])
 	
-	u2 = np.array([u1[1] * u2[2] - u1[2] * u2[1], u1[2] * u2[0] - u1[0] * u2[2], u1[0] * u2[1] - u1[1] * u2[0]])
+	u2 = np.cross(u1, u2)
+	# u2 = np.array([u1[1] * u2[2] - u1[2] * u2[1], u1[2] * u2[0] - u1[0] * u2[2], u1[0] * u2[1] - u1[1] * u2[0]])
 	u2 = u2 / np.linalg.norm(u2)
 
-	u3 = np.array([u1[1] * u2[2] - u1[2] * u2[1], u1[2] * u2[0] - u1[0] * u2[2], u1[0] * u2[1] - u1[1] * u2[0]])
-
+	# u3 = np.array([u1[1] * u2[2] - u1[2] * u2[1], u1[2] * u2[0] - u1[0] * u2[2], u1[0] * u2[1] - u1[1] * u2[0]])
+	u3 = np.cross(u1, u2)
 	U = np.array([u1, u2, u3])
 
 	Qk = Q[k+1: nr_P_row]
@@ -62,14 +68,14 @@ def optimize_structure_by_pos(Q_origin, P_origin, k_pos):
 	return Q
 
 
-def optimize(Q_origin, P_origin, rounds=1750):
+def optimize(Q_origin, P_origin, rounds=100):
 	P = np.copy(P_origin)
 	Q = np.copy(Q_origin)
 
-	for _ in range(rounds):
+	for j in range(rounds):
 		for k in range(2, P.shape[0]-1):
 			Q = optimize_structure_by_pos(Q, P, k)
-		print rmsd(Q, P)
+		print "rounds: ", j, " rmsd: ",rmsd(Q, P)
 
 	print rmsd(Q, P)
 	return Q
@@ -94,17 +100,7 @@ def optimize_accelerate(Q_origin, P_origin):
 		for k in range((P.shape[0]-1)/2, P.shape[0]-1):
 			Q = optimize_structure_by_pos(Q, P, k)
 	
-
-	print rmsd(Q, P)
 	return Q
-
-
-
-
-
-
-
-
 
 
 

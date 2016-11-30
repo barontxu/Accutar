@@ -1,9 +1,11 @@
 import numpy as np
 import sys
+import random
 sys.path.append("..")
 import config
 from kabsch import kabsched_Q, rmsd, kabsch_rmsd
 
+random.seed(10)
 
 def wrap_config():
 	cf = config.config
@@ -60,11 +62,11 @@ def expand_Q_from(Q, P):
 	Q 		 : k+1 * 3
 	'''
 	nr_points = Q.shape[0]
-	lengths = q_config[(nr_points-2)%3]["side_lengths"]
-	rad 	= q_config[(nr_points-2)%3]["rad"]
+	lengths   = q_config[(nr_points-2)%3]["side_lengths"]
+	rad 	  = q_config[(nr_points-2)%3]["rad"]
 
+	# center of circle of possible next points
 	center_para = lengths[1] * np.cos(rad) / lengths[0]
-
 	center_of_next_Q = Q[-1] * (1 - center_para) + Q[-2] * center_para
 
 	proj_para = np.dot(P[-1]-Q[-1], Q[-1]-Q[-2]) / (lengths[0]*lengths[0])
@@ -78,3 +80,64 @@ def expand_Q_from(Q, P):
 
 	Q = kabsched_Q(Q, P)
 	return Q
+
+
+def randomly_construct_Q_from(P):
+	'''
+	randomly generate initial state to test if the original algrithm can get the optimal result
+	'''
+	lengths = q_config[0]["side_lengths"]
+	p0 		= P[0]
+	p1 		= P[1]
+	q1 		= p0 + (p1 - p0) / np.linalg.norm(p1-p0) * lengths[0]
+	
+	Q = np.array([P[0], q1])
+	Q = kabsched_Q(Q, P[0:2])
+
+	for i in range(2, P.shape[0]):
+		tmp_p = P[0:i+1]
+		Q = randomly_expand_Q_from(Q, tmp_p)
+
+
+	print rmsd(Q, P)
+
+	return Q
+
+
+
+def randomly_expand_Q_from(Q, P):
+	nr_points = Q.shape[0]
+	lengths   = q_config[(nr_points-2)%3]["side_lengths"]
+	rad 	  = q_config[(nr_points-2)%3]["rad"]
+
+	center_para = lengths[1] * np.cos(rad) / lengths[0]
+	center_of_next_Q = Q[-1] * (1 - center_para) + Q[-2] * center_para
+
+	u1 = (Q[-1]-Q[-2])
+	u1 = u1 / np.linalg.norm(u1)
+
+	u2 = np.array([1, 0, 0])
+	if np.abs(u1[1]) < np.abs(u1[0]):
+		u2 = np.array([0, 1, 0])
+	
+	u2 = np.cross(u1, u2)
+	# u2 = np.array([u1[1] * u2[2] - u1[2] * u2[1], u1[2] * u2[0] - u1[0] * u2[2], u1[0] * u2[1] - u1[1] * u2[0]])
+	u2 = u2 / np.linalg.norm(u2)
+
+	# u3 = np.array([u1[1] * u2[2] - u1[2] * u2[1], u1[2] * u2[0] - u1[0] * u2[2], u1[0] * u2[1] - u1[1] * u2[0]])
+	u3 = np.cross(u1, u2)
+	U = np.array([u1, u2, u3])
+
+	next_rad = random.random() * np.pi * 2
+	radius = lengths[1] * np.sin(rad)
+	next_Q_point_in_U = np.array([0, radius*np.sin(next_rad),
+						        	 radius*np.cos(next_rad)])
+	next_Q_point = np.dot(next_Q_point_in_U, U) + center_of_next_Q
+	Q = np.vstack([Q, next_Q_point])
+	Q = kabsched_Q(Q, P)
+	return Q
+
+
+
+
+
