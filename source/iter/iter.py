@@ -10,7 +10,7 @@ import sys
 sys.path.append("..")
 import config
 from kabsch import kabsched_Q, rmsd, kabsch_rmsd
-from init_Q import construct_Q_from, optimal_construct_Q_from
+from init_Q import construct_Q_from, optimal_construct_Q_from, start_intensively_optimal_construct_Q_from
 from optimize import optimize, optimize_accelerate
 from utils import structure_test, save_structure, load_structure
 
@@ -50,7 +50,7 @@ if __name__ == "__main__":
 	if not need_continue:
 
 		# QMatrix = optimal_construct_Q_from(PMatrix)
-		QMatrix = optimal_construct_Q_from(PMatrix)
+		QMatrix = start_intensively_optimal_construct_Q_from(PMatrix, internal=2, rounds=4)
 
 		start = time.time()
 		QMatrix = optimize(QMatrix, PMatrix, rounds)

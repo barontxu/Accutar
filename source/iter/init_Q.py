@@ -99,11 +99,9 @@ def randomly_construct_Q_from(P):
 		tmp_p = P[0:i+1]
 		Q = randomly_expand_Q_from(Q, tmp_p)
 
-
 	print rmsd(Q, P)
 
 	return Q
-
 
 
 def randomly_expand_Q_from(Q, P):
@@ -140,7 +138,7 @@ def randomly_expand_Q_from(Q, P):
 
 
 
-def optimal_construct_Q_from(P):
+def optimal_construct_Q_from(P, internal=5, rounds=5):
 	'''
 	construct a init Q for further refinement
 	'''
@@ -158,8 +156,38 @@ def optimal_construct_Q_from(P):
 		Q = expand_Q_from(Q, tmp_p)
 		for _ in range(5):
 			Q = expand_Q_from(Q[0:-1], tmp_p)
-		if i % 5 == 0:
+		if i % internal == 0:
+			Q = optimize(Q, tmp_p, rounds)
+
+	print rmsd(Q, P)
+	print "lower bound: ", lower_bound(Q,P)
+
+	return Q
+
+
+def start_intensively_optimal_construct_Q_from(P, internal=5, rounds=5):
+	'''
+	construct a init Q for further refinement
+	'''
+
+	lengths = q_config[0]["side_lengths"]
+	p0 		= P[0]
+	p1 		= P[1]
+	q1 		= p0 + (p1 - p0) / np.linalg.norm(p1-p0) * lengths[0]
+	
+	Q = np.array([P[0], q1])
+	Q = kabsched_Q(Q, P[0:2])
+
+	for i in range(2, P.shape[0]):
+		print 'now: ', i
+		tmp_p = P[0:i+1]
+		Q = expand_Q_from(Q, tmp_p)
+		for _ in range(5):
+			Q = expand_Q_from(Q[0:-1], tmp_p)
+		if i < 500:
 			Q = optimize(Q, tmp_p, 5)
+		elif i % internal == 0:
+			Q = optimize(Q, tmp_p, rounds)
 
 	print rmsd(Q, P)
 	print "lower bound: ", lower_bound(Q,P)

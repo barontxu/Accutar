@@ -88,7 +88,6 @@ def optimize_accelerate(Q_origin, P_origin):
 	PU = np.flipud(P)
 	QU = np.flipud(Q)
 
-	
 	for _ in range(rounds):
 		for k in range(2, (P.shape[0]-1)/2):
 			QU = optimize_structure_by_pos(QU, PU, P.shape[0]-1-k)
@@ -99,8 +98,6 @@ def optimize_accelerate(Q_origin, P_origin):
 			Q = optimize_structure_by_pos(Q, P, k)
 	
 	return Q
-
-
 
 
 
