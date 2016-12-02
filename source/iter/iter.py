@@ -50,7 +50,7 @@ if __name__ == "__main__":
 	if not need_continue:
 
 		# QMatrix = optimal_construct_Q_from(PMatrix)
-		QMatrix = start_intensively_optimal_construct_Q_from(PMatrix, internal=2, rounds=4)
+		QMatrix = start_intensively_optimal_construct_Q_from(PMatrix, internal=1, rounds=100)
 
 		start = time.time()
 		QMatrix = optimize(QMatrix, PMatrix, rounds)
